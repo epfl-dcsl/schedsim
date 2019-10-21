@@ -1,6 +1,8 @@
 package blocks
 
 import (
+	"math/rand"
+
 	"github.com/epfl-dcsl/schedsim/engine"
 )
 
@@ -47,6 +49,11 @@ func (r MonitorReq) getFinalLen() int {
 	return r.finalLength
 }
 
+type ColoredReq struct {
+	Request
+	color int
+}
+
 // ReqCreator is a used by generators to create the appropriate type of requests
 type ReqCreator interface {
 	NewRequest(serviceTime float64) engine.ReqInterface
@@ -74,4 +81,10 @@ type MonitorReqCreator struct{}
 // NewRequest returns a new MonitorReq struct
 func (rc MonitorReqCreator) NewRequest(serviceTime float64) engine.ReqInterface {
 	return &MonitorReq{Request{InitTime: engine.GetTime(), ServiceTime: serviceTime}, 0, 0}
+}
+
+type ColoredReqCreator struct{}
+
+func (rc ColoredReqCreator) NewRequest(serviceTime float64) engine.ReqInterface {
+	return &ColoredReq{Request{InitTime: engine.GetTime(), ServiceTime: serviceTime}, rand.Int() % 2}
 }

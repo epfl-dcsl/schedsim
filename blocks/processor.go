@@ -150,3 +150,57 @@ func (p *PSProcessor) Run() {
 		}
 	}
 }
+
+type BoundedProcessor struct {
+	genericProcessor
+	bufSize int
+}
+
+func NewBoundedProcessor(bufSize int) *BoundedProcessor {
+	return &BoundedProcessor{bufSize: bufSize}
+}
+
+// Run is the main processor loop
+func (p *BoundedProcessor) Run() {
+	var factor float64
+	for {
+		req := p.ReadInQueue()
+
+		if colorReq, ok := req.(*ColoredReq); ok {
+			if colorReq.color == 1 {
+				factor = 2
+			} else {
+				factor = 1
+			}
+		}
+		p.Wait(factor * req.GetServiceTime())
+		len := p.GetOutQueueLen(0)
+		if len < p.bufSize {
+			p.WriteOutQueue(req)
+		} else {
+			p.reqDrain.TerminateReq(req)
+		}
+	}
+}
+
+type BoundedProcessor2 struct {
+	genericProcessor
+}
+
+// Run is the main processor loop
+func (p *BoundedProcessor2) Run() {
+	var factor float64
+	for {
+		req := p.ReadInQueue()
+
+		if colorReq, ok := req.(*ColoredReq); ok {
+			if colorReq.color == 0 {
+				factor = 2
+			} else {
+				factor = 1
+			}
+		}
+		p.Wait(factor * req.GetServiceTime())
+		p.reqDrain.TerminateReq(req)
+	}
+}
