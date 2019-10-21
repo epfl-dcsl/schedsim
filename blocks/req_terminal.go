@@ -79,9 +79,11 @@ func (k *AllKeeper) PrintStats() {
 	fmt.Printf("%v\t%v\t%v\t%v\t", len(k.items), k.stolenCount, k.avg(), k.std())
 
 	vals := []float64{0.5, 0.9, 0.95, 0.99}
-	percentiles := k.getPercentiles()
-	for _, v := range vals {
-		fmt.Printf("%v\t", percentiles[v])
+	if len(k.items) > 0 {
+		percentiles := k.getPercentiles()
+		for _, v := range vals {
+			fmt.Printf("%v\t", percentiles[v])
+		}
 	}
 	fmt.Printf("%v\n", float64(len(k.items))/engine.GetTime())
 }
