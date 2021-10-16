@@ -75,7 +75,7 @@ func (k *AllKeeper) getPercentiles() map[float64]float64 {
 // This is called by the model
 func (k *AllKeeper) PrintStats() {
 	fmt.Printf("Stats collector: %v\n", k.name)
-	fmt.Printf("Count\tStolen\tAVG\tSTDDev\t50th\t90th\t95th\t99th Reqs/time_unit\n")
+	fmt.Printf("Count\tStolen\tAVG\tSTDDev\t50th\t90th\t95th\t99th\tReqs/time_unit\n")
 	fmt.Printf("%v\t%v\t%v\t%v\t", len(k.items), k.stolenCount, k.avg(), k.std())
 
 	vals := []float64{0.5, 0.9, 0.95, 0.99}
